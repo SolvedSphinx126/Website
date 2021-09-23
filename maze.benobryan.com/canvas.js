@@ -26,13 +26,13 @@ const ctx = canvas.getContext("2d");
 
 
 //Maze temp
-let rows = 30
+let rows = 10
 let cols = 3*rows
 let maze = new Array(rows).fill(0).map(() => new Array(cols).fill(0));
 
 
 //ctx.fillRect(0,0,canvas.width,canvas.height)
-generateMaze(maze)
+generateMaze(maze, "Random Kruskal")
 drawMaze(3, maze)
 
 function drawBackground()
@@ -93,18 +93,18 @@ function drawMaze(wallWidth, arr)
             if((val&UP) > 0)
             {
                 point = getCorner("NW",row, col, wallWidth)
-                ctx.fillRect(point[0], point[1]+0, cellWidth, -wallWidth-0);
+                ctx.fillRect(point[0], point[1], cellWidth, -wallWidth);
             }
             if((val&RIGHT) > 0)
             {
                 point = getCorner("NE",row, col, wallWidth)
                 console.log("hi")
-                ctx.fillRect(point[0]-0, point[1], wallWidth + 0, cellHeight);
+                ctx.fillRect(point[0], point[1], wallWidth, cellHeight);
             }
             if((val&DOWN) > 0)
             {
                 point = getCorner("SW",row, col, wallWidth)
-                ctx.fillRect(point[0], point[1]-0, cellWidth, wallWidth+0);
+                ctx.fillRect(point[0], point[1], cellWidth, wallWidth+0);
             }
             if((val&LEFT) > 0)
             {
@@ -126,21 +126,41 @@ function drawMaze(wallWidth, arr)
 
 }
 
-function generateMaze(maze)
+function generateMaze(maze, mode)
 {
-    for(let i = 0; i < maze.length; i++)
-    {
-        for(let j = 0; j < maze[0].length; j++)
-        {
+    switch (mode){
+        case "Binary Tree":
+            for(let i = 0; i < maze.length; i++)
+            {
+                for(let j = 0; j < maze[0].length; j++)
+                {
 
-            if(Math.random()>0.5)
-            {
-                maze[i][j] = LEFT;
+                    if(Math.random()>0.5)
+                    {
+                        maze[i][j] = LEFT;
+                    }
+                    else
+                    {
+                        maze[i][j] = UP;
+                    }
+                }
             }
-            else
+            break;
+        case "Random Kruskal":
+            //let cells = [];
+            let cells = new Set()
+            for(let i = 0; i < maze.length; i++)
             {
-                maze[i][j] = UP;
+                for(let j = 0; j < maze[0].length; j++)
+                {
+                    cells.add([i,j])
+                    //console.log(temp)
+                    //cells.push(temp)
+
+                }
             }
-        }
+            console.log(cells)
+
     }
+
 }
