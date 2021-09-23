@@ -26,23 +26,13 @@ const ctx = canvas.getContext("2d");
 
 
 //Maze temp
-let maze =[
-    [DOWN|RIGHT,RIGHT      ,RIGHT      ,0          ,UP         ,LEFT      ,RIGHT      ,RIGHT      ,RIGHT      ,DOWN       ],
-    [RIGHT|DOWN,RIGHT      ,RIGHT      ,DOWN       ,RIGHT      ,UP        ,UP         ,LEFT       ,DOWN       ,LEFT       ],
-    [RIGHT     ,RIGHT      ,DOWN       ,RIGHT      ,UP         ,RIGHT     ,RIGHT      ,UP|DOWN    ,DOWN       ,DOWN       ],
-    [DOWN      ,LEFT       ,RIGHT      ,RIGHT      ,RIGHT      ,UP        ,RIGHT      ,UP         ,DOWN       ,DOWN       ],
-    [RIGHT     ,RIGHT      ,RIGHT      ,DOWN       ,DOWN       ,LEFT      ,DOWN       ,LEFT       ,DOWN       ,DOWN       ],
-    [DOWN      ,LEFT       ,DOWN       ,LEFT       ,RIGHT      ,UP|DOWN   ,DOWN       ,UP         ,DOWN|RIGHT ,DOWN       ],
-    [DOWN      ,LEFT       ,LEFT       ,DOWN       ,LEFT       ,LEFT      ,DOWN       ,DOWN       ,LEFT       ,DOWN       ],
-    [DOWN      ,LEFT       ,LEFT       ,LEFT       ,DOWN       ,DOWN|LEFT ,RIGHT      ,DOWN       ,DOWN       ,LEFT       ],
-    [DOWN      ,DOWN       ,LEFT|UP    ,DOWN       ,LEFT       ,UP        ,LEFT       ,DOWN       ,DOWN       ,DOWN       ],
-    [0         ,RIGHT      ,RIGHT      ,UP         ,LEFT       ,LEFT      ,LEFT       ,LEFT       ,UP         ,LEFT       ],
-]
-let rows = maze.length;
-let cols = maze[0].length;
+let rows = 30
+let cols = 3*rows
+let maze = new Array(rows).fill(0).map(() => new Array(cols).fill(0));
 
 
 //ctx.fillRect(0,0,canvas.width,canvas.height)
+generateMaze(maze)
 drawMaze(3, maze)
 
 function drawBackground()
@@ -103,18 +93,18 @@ function drawMaze(wallWidth, arr)
             if((val&UP) > 0)
             {
                 point = getCorner("NW",row, col, wallWidth)
-                ctx.fillRect(point[0], point[1]+1, cellWidth, -wallWidth-2);
+                ctx.fillRect(point[0], point[1]+0, cellWidth, -wallWidth-0);
             }
             if((val&RIGHT) > 0)
             {
                 point = getCorner("NE",row, col, wallWidth)
                 console.log("hi")
-                ctx.fillRect(point[0]-1, point[1], wallWidth + 2, cellHeight);
+                ctx.fillRect(point[0]-0, point[1], wallWidth + 0, cellHeight);
             }
             if((val&DOWN) > 0)
             {
                 point = getCorner("SW",row, col, wallWidth)
-                ctx.fillRect(point[0], point[1]-1, cellWidth, wallWidth+2);
+                ctx.fillRect(point[0], point[1]-0, cellWidth, wallWidth+0);
             }
             if((val&LEFT) > 0)
             {
@@ -134,4 +124,23 @@ function drawMaze(wallWidth, arr)
     }
     */
 
+}
+
+function generateMaze(maze)
+{
+    for(let i = 0; i < maze.length; i++)
+    {
+        for(let j = 0; j < maze[0].length; j++)
+        {
+
+            if(Math.random()>0.5)
+            {
+                maze[i][j] = LEFT;
+            }
+            else
+            {
+                maze[i][j] = UP;
+            }
+        }
+    }
 }
