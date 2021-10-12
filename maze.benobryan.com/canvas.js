@@ -11,7 +11,7 @@ const DOWN = 4;
 const LEFT = 8;
 
 //Colors
-const mazeBg = '#FFFFFF'
+const mazeBg = '#ffffff'
 const wall = '#000000'
 const canvasBg = '#ffffff'
 
