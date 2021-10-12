@@ -32,8 +32,9 @@ let maze = new Array(rows).fill(0).map(() => new Array(cols).fill(0));
 
 
 //ctx.fillRect(0,0,canvas.width,canvas.height)
-generateMaze(maze, "Random Kruskal")
+generateMaze(maze, "Binary Tree")
 drawMaze(3, maze)
+//connectCells(1,1,0,1,3);
 
 function drawBackground()
 {
@@ -49,14 +50,14 @@ function getCorner(dir,row,col,wallWidth)
     switch(dir)
     {
 
-        case "NE":
-            ans = [(col + 1)*(cellWidth+wallWidth),((row+1)*wallWidth) + (row*cellHeight)];
-            break;
         case "SE":
-            ans = [col*(cellWidth+wallWidth),(row+1)*(cellHeight+wallWidth)];
+            ans = [(col + 1)*(cellWidth+wallWidth),((row+1)*(wallWidth + cellHeight))];
+            break;
+        case "NE":
+            ans = [(col + 1)*(cellWidth+wallWidth),(row+1)*wallWidth + row*cellWidth];
             break;
         case "SW":
-            ans = [((col+1)*wallWidth) + (col*cellWidth),(row+1)*(cellHeight+wallWidth)];
+            ans = [((col+1)*wallWidth) + (col*cellWidth),((row+1)*(wallWidth + cellHeight))];
             break;
         case "NW":
             ans = [((col+1)*wallWidth) + (col*cellWidth),((row+1)*wallWidth) + (row*cellHeight)];
@@ -74,7 +75,7 @@ function getCorner(dir,row,col,wallWidth)
 
 function drawMaze(wallWidth, arr)
 {
-    cellWidth = (mazeWidth - (wallWidth*(1+cols))) / cols;
+    cellWidth = Math.round((mazeWidth - (wallWidth*(1+cols))) / cols);
     cellHeight = (mazeHeight - (wallWidth*(1+rows))) / rows;
     drawBackground()
     ctx.fillStyle = mazeBg;
@@ -94,24 +95,23 @@ function drawMaze(wallWidth, arr)
 
             if((val&UP) > 0)
             {
-                point = getCorner("NW",row, col, wallWidth)
-                ctx.fillRect(point[0], point[1], cellWidth, -wallWidth);
+                connectCells(row,col,row-1,col,wallWidth);
+                console.log("up")
             }
             if((val&RIGHT) > 0)
             {
-                point = getCorner("NE",row, col, wallWidth)
-                console.log("hi")
-                ctx.fillRect(point[0], point[1], wallWidth, cellHeight);
+                connectCells(row,col,row,col+1,wallWidth)
+                console.log("right")
             }
             if((val&DOWN) > 0)
             {
-                point = getCorner("SW",row, col, wallWidth)
-                ctx.fillRect(point[0], point[1], cellWidth, wallWidth+0);
+                connectCells(row,col,row+1,col,wallWidth)
+                console.log("down")
             }
             if((val&LEFT) > 0)
             {
-                point = getCorner("NW",row, col, wallWidth)
-                ctx.fillRect(point[0]+1, point[1], -wallWidth-2, cellHeight);
+                connectCells(row,col,row,col-1,wallWidth)
+                console.log("left")
             }
 
         }
@@ -132,19 +132,19 @@ function connectCells(x1,y1,x2,y2,wallWidth)
 {
     let topLeft
     let bottomRight
-    console.log("printing")
-    ctx.fillStyle = '#ff0000';
-    if(x2>x1)
-    {
+    //console.log("printing")
+    ctx.fillStyle = '#ffffff';
+    //if(x2>x1)
+    //{
         topLeft = [getCorner("NW", x1, y1, wallWidth)[0],getCorner("NW", x1, y1, wallWidth)[1]];
-        bottomRight = [getCorner("SE", x1, x1, wallWidth)[0],getCorner("SE", x1, x1, wallWidth)[1]];
-        ctx.fillRect(bottomRight[0], bottomRight[1], 10, 10)
-        //ctx.fillRect(topLeft[0], topLeft[1], bottomRight[0]-topLeft[0], bottomRight[1]-topLeft[1]);
-    }
+        bottomRight = [getCorner("SE", x2, y2, wallWidth)[0],getCorner("SE", x2, y2, wallWidth)[1]];
+        //ctx.fillRect(bottomRight[0], bottomRight[1], 10, 10)
+        ctx.fillRect(topLeft[0], topLeft[1], bottomRight[0]-topLeft[0], bottomRight[1]-topLeft[1]);
+    //}
 
-    if(y2>y1)
-        ctx.fillRect(getCorner("NW", x1, y1, wallWidth)[0], getCorner("NW", x1, y1, wallWidth)[1], cellWidth, 2*cellHeight+wallWidth);
-    console.log("printed")
+    //if(y2>y1)
+        //ctx.fillRect(getCorner("NW", x1, y1, wallWidth)[0], getCorner("NW", x1, y1, wallWidth)[1], cellWidth, 2*cellHeight+wallWidth);
+    //console.log("printed")
 }
 
 function generateMaze(maze, mode)
