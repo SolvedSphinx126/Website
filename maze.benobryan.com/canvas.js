@@ -167,43 +167,17 @@ function generateMaze(maze, mode)
                 }
             }
             break;
-        /*case "Random Kruskal":
-            //let cells = [];
-            let randX = Math.floor(Math.random() * cols);
-            let randY = Math.floor(Math.random() * rows);
-            let arr;
-            let cells = new Set()
-            for(let i = 0; i < maze.length; i++)
+        case "Random Kruskal":
+            let walls = [];
+            for(let row = 0; row < rows - 1; row++)
             {
-                for(let j = 0; j < maze[0].length; j++)
+                for(let col = 0; col < cols - 1; col++)
                 {
-                    cells.add([j,i])
-                    //console.log(temp)
-                    //cells.push(temp)
 
                 }
             }
-            arr = Array.from(cells)
-
-            console.log(arr[cols*randY+randX][0])
 
 
-
-
-            while(cells.size > 1)
-            {
-                randX = Math.random() * cols;
-                randY = Math.random() * rows;
-                for(let i = 0; i < rows; i++)
-                {
-                    for(let j = 0; j < cols; j++)
-                    {
-
-                    }
-                }
-            }
-
-             */
         case "Depth First Search":
 
 
