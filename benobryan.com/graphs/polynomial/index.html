@@ -45,6 +45,12 @@
                     {
                         id:'graph1',
                         latex:convertToExpression(xvalues, yvalues)
+                    },
+                    {
+                        "id":"33",
+                        "type":"text",
+                        "secret":false,
+                        "latex":"text"
                     }
                 ]
             );
@@ -73,7 +79,7 @@
 
             var expression = "";
             for (var i = 0; i < matrix.length; i++) {
-                expression += (parseFloat(matrix[i][matrix[0].length - 1]).toPrecision(5))
+                expression += (parseFloat(matrix[i][matrix[0].length - 1]))
                 expression += "x^"
                 expression += i
                 expression += "+"
@@ -144,7 +150,7 @@
 
             xvalues.push(mathCoordinates.x.toPrecision(2));
             yvalues.push(mathCoordinates.y.toPrecision(2));
-            if(xvalues.length > 5) {
+            if(xvalues.length > 10) {
                 xvalues.shift();
                 yvalues.shift();
             }
