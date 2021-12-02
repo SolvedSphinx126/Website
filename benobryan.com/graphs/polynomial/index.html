@@ -38,19 +38,13 @@
 
                         columns: [
                             {latex: 'x', values: xvalues},
-                            {latex: 'y', values: yvalues, dragMode: 'none'}
+                            {latex: 'y', values: yvalues, dragMode: 'NONE'}
                         ]
 
                     },
                     {
                         id:'graph1',
                         latex:convertToExpression(xvalues, yvalues)
-                    },
-                    {
-                        "id":"33",
-                        "type":"text",
-                        "secret":false,
-                        "latex":"text"
                     }
                 ]
             );
