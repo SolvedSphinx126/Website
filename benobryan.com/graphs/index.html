@@ -4,13 +4,152 @@
     <meta charset="UTF-8">
     <title>Graphs</title>
     <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #calculator {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body>
-    <div id="calculator" style="width: 600px; height: 400px;"></div>
+    <div id="calculator"></div>
     <script>
+        //var rref = require('rref')
         var elt = document.getElementById('calculator');
-        var calculator = Desmos.GraphingCalculator(elt);
-        calculator.setExpression({ id: 'graph1', latex: 'y=x^2' });
+        var options = { border: false, administerSecretFolders: true};
+        var calculator = Desmos.GraphingCalculator(elt, options);
+        var xvalues = ['1', '2'];
+        var yvalues = ['1', '2'];
+
+        function updateTable () {
+            calculator.setExpressions(
+                [
+                    {
+                        id: 'table1',
+                        type: 'table',
+
+                        columns: [
+                            {latex: 'x', values: xvalues},
+                            {latex: 'y', values: yvalues, dragMode: 'XY'}
+                        ]
+
+                    },
+                    {
+                        id:'graph1',
+                        latex:convertToExpression(xvalues, yvalues)
+                    }
+                ]
+            );
+
+
+        }
+
+        function convertToExpression(xPoints, yPoints)
+        {
+            var matrix = [];
+
+            for (var row=0;row<xPoints.length;row++)
+            {
+                var data = [];
+                for (var col=0;col<xPoints.length;col++)
+                {
+                    data.push(Math.pow(xPoints[row],col));
+                }
+                data.push(parseFloat(yPoints[row]))
+                matrix.push(data);
+
+            }
+
+            matrix = rref(matrix)
+
+
+            var expression = "";
+            for (var i = 0; i < matrix.length; i++) {
+                expression += (parseFloat(matrix[i][matrix[0].length - 1]).toPrecision(3))
+                expression += "x^"
+                expression += i
+                expression += "+"
+            }
+            expression = expression.slice(0,expression.length-1)
+            return expression;
+        }
+
+        function rref(matrix)
+        {
+            const rows = matrix.length;
+            const columns = matrix[0].length;
+
+            let lead = 0;
+            for (let k = 0; k < rows; k++) {
+                if (columns <= lead) return;
+
+                let i = k;
+                while (matrix[i][lead] === 0) {
+                    i++;
+                    if (rows === i) {
+                        i = k;
+                        lead++;
+                        if (columns === lead) return;
+                    }
+                }
+                var irow = matrix[i], krow = matrix[k];
+                matrix[i] = krow, matrix[k] = irow;
+
+                var val = matrix[k][lead];
+                for (var j = 0; j < columns; j++) {
+                    matrix[k][j] /= val;
+                }
+
+                for (i = 0; i < rows; i++) {
+                    if (i === k) continue;
+                    val = matrix[i][lead];
+                    for (var j = 0; j < columns; j++) {
+                        matrix[i][j] -= val * matrix[k][j];
+                    }
+                }
+                lead++;
+            }
+            return matrix;
+        };
+
+        updateTable();
+
+        function inRectangle(point, rect) {
+            return (
+                point.x >= rect.left &&
+                point.x <= rect.right &&
+                point.y <= rect.top &&
+                point.y >= rect.bottom
+            )
+        }
+
+        elt.addEventListener('click', function (evt) {
+            var rect = elt.getBoundingClientRect();
+            var x = evt.clientX - rect.left;
+            var y = evt.clientY - rect.top;
+            // Note, pixelsToMath expects x and y to be referenced to the top left of
+            // the calculator's parent container.
+            var mathCoordinates = calculator.pixelsToMath({x: x, y: y});
+
+
+            if (!inRectangle(mathCoordinates, calculator.graphpaperBounds.mathCoordinates)) return;
+
+            xvalues.push(mathCoordinates.x.toPrecision(2));
+            yvalues.push(mathCoordinates.y.toPrecision(2));
+            if(xvalues.length > 5) {
+                xvalues.shift();
+                yvalues.shift();
+            }
+            updateTable();
+        });
     </script>
 </body>
 </html>
