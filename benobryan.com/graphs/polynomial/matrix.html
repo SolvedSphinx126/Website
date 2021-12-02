@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Matrix</title>
+    <script src="https://www.desmos.com/api/v1.6/calculator.js?apiKey=dcb31709b452b1cf9dc26972add0fda6"></script>
+</head>
+<body>
+<script >
+    var elt = document.getElementById('calculator');
+    var calculator = Desmos.MatrixCalculator(elt);
+</script>
+</body>
+</html>
+
+
+{
+id: 'table1',
+type: 'table',
+
+columns: [
+{latex: 'x', values: xvalues},
+{latex: 'y', values: yvalues, dragMode: 'XY'}
+]
+
+}
