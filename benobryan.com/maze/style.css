@@ -13,4 +13,6 @@ body {
 
 #controller {
     position: absolute;
+    background: aqua;
+    height: 200px;
 }

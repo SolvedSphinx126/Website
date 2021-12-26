@@ -13,15 +13,15 @@ const LEFT = 8;
 //Colors
 const mazeBg = '#ffffff'
 const wall = '#000000'
-const canvasBg = '#ffffff'
 
-canvas.setAttribute("style", "background: " + canvasBg)
+canvas.setAttribute("style", "background: " + mazeBg)
 
 //Maze preDraw
 let cellWidth
 let cellHeight
 let mazeWidth = canvas.width;
 let mazeHeight = canvas.height;
+let lineWidth = 3
 const ctx = canvas.getContext("2d");
 
 
@@ -30,15 +30,65 @@ let rows = 10
 let cols = 3*rows
 let maze = new Array(rows).fill(0).map(() => new Array(cols).fill(0));
 
+function Cell(x, y)
+{
+    this.x = x
+    this.y = y
+}
+
+function Wall(cell1, cell2)
+{
+    this.cell1 = cell1
+    this.cell2 = cell2
+}
+
+function union(arr1, arr2)
+{
+    // creating new set to store union
+    var unionSet = new Set();
+
+    // iterate over the values and add
+    // it to unionSet
+    for (var elem of set1)
+    {
+        unionSet.add(elem);
+    }
+
+    // iterate over the values and add it to
+    // the unionSet
+    for(var elem of set2)
+        unionSet.add(elem);
+
+    // return the values of unionSet
+    return unionSet;
+}
+
+function shuffle(array) {
+    let currentIndex = array.length,  randomIndex;
+
+    // While there remain elements to shuffle...
+    while (currentIndex != 0) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
 
 //ctx.fillRect(0,0,canvas.width,canvas.height)
-generateMaze(maze, "Binary Tree")
-drawMaze(3, maze)
+generateMaze(maze, "Random Kruskal")
+drawMaze(lineWidth, maze)
 //connectCells(1,1,0,1,3);
 
 function drawBackground()
 {
-
     ctx.fillStyle = wall;
     ctx.fillRect(0, canvas.height-mazeHeight, mazeWidth, mazeHeight)
 }
@@ -116,35 +166,18 @@ function drawMaze(wallWidth, arr)
 
         }
     }
-    /*
-    for(let j = 0; j < rows; j++)
-    {
-        for(let i = 0; i < cols; i++)
-        {
-            ctx.fillRect(((i+1)*wallWidth) + (i*cellWidth), ((j+1)*wallWidth) + (j*cellHeight), cellWidth, cellHeight);
-        }
-    }
-    */
-
 }
 
 function connectCells(x1,y1,x2,y2,wallWidth)
 {
     let topLeft
     let bottomRight
-    //console.log("printing")
-    ctx.fillStyle = '#ffffff';
-    //if(x2>x1)
-    //{
-        topLeft = [getCorner("NW", x1, y1, wallWidth)[0],getCorner("NW", x1, y1, wallWidth)[1]];
-        bottomRight = [getCorner("SE", x2, y2, wallWidth)[0],getCorner("SE", x2, y2, wallWidth)[1]];
-        //ctx.fillRect(bottomRight[0], bottomRight[1], 10, 10)
-        ctx.fillRect(topLeft[0], topLeft[1], bottomRight[0]-topLeft[0], bottomRight[1]-topLeft[1]);
-    //}
+    ctx.fillStyle = mazeBg;
 
-    //if(y2>y1)
-        //ctx.fillRect(getCorner("NW", x1, y1, wallWidth)[0], getCorner("NW", x1, y1, wallWidth)[1], cellWidth, 2*cellHeight+wallWidth);
-    //console.log("printed")
+    topLeft = [getCorner("NW", x1, y1, wallWidth)[0],getCorner("NW", x1, y1, wallWidth)[1]];
+    bottomRight = [getCorner("SE", x2, y2, wallWidth)[0],getCorner("SE", x2, y2, wallWidth)[1]];
+    ctx.fillRect(topLeft[0], topLeft[1], bottomRight[0]-topLeft[0], bottomRight[1]-topLeft[1]);
+
 }
 
 function generateMaze(maze, mode)
@@ -168,14 +201,42 @@ function generateMaze(maze, mode)
             }
             break;
         case "Random Kruskal":
-            let walls = [];
-            for(let row = 0; row < rows - 1; row++)
+            // https://weblog.jamisbuck.org/2011/1/3/maze-generation-kruskal-s-algorithm
+            let sets = []
+            let walls = []
+            for(let x = 0; x < maze.length; x++)
             {
-                for(let col = 0; col < cols - 1; col++)
+                for(let y = 0; y < maze[0].length; y++)
                 {
-
+                    cell = new Cell(x, y)
+                    set = new Set([cell])
+                    sets.push(set)
+                    if(x > 0)
+                        walls.push(new Wall(cell, new Cell(x-1, y)))
+                    if(y > 0)
+                        walls.push(new Wall(cell, new Cell(x, y-1)))
                 }
             }
+            for (let i = 0; i < walls.length; i++) {
+                connectCells(walls[i].cell1.x, walls[i].cell1.y, walls[i].cell2.x, walls[i].cell2.y, lineWidth)
+            }
+
+            shuffle(walls)
+            console.log(sets[0])
+
+            console.log(walls[0])
+            for(let i = 0; i < walls.length; i++)
+            {
+                for(let j = 0; j < sets.length; j++)
+                {
+                    for(let k = 0; k < sets[j].length; k++)
+                    {
+                        if(walls[i].cell1.x == sets[j][k].x && walls[i].cell1.y == sets[j][k].y)
+                            console.log("match found")
+                    }
+                }
+            }
+
 
 
         case "Depth First Search":
